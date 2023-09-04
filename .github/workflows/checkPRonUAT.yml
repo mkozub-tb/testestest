@@ -16,7 +16,6 @@ jobs:
       - name: Set up Git
         run: |
           echo "boli boli boli"
-          sleep 10
           echo ${{secrets.GITHUB_TOKEN}}
           git config user.name "mkozub-tb"
           git config user.email "marcin.kozub@thinkbeyond.cloud"

@@ -9,8 +9,6 @@ on:
 #      - 'feature/*'
 
 jobs:
-
-
   merge_uat_to_int:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'uat'
     runs-on: ubuntu-latest
@@ -22,7 +20,6 @@ jobs:
       - name: Set up Git
         run: |
           echo "boli boli boli"
-          sleep 10
           echo ${{secrets.GITHUB_TOKEN}}
           git config user.name "mkozub-tb"
           git config user.email "marcin.kozub@thinkbeyond.cloud"
@@ -51,6 +48,9 @@ jobs:
               -H "Authorization: token $GITHUB_TOKEN" \
               -d "{\"state\":\"$STATE\",\"context\":\"$CONTEXT\",\"description\":\"Custom status description for all pull requests\"}"
           done
+          
+          # Sleep on purpose
+          sleep 10
 
       - name: Fetch all branches from origin
         run: |
@@ -62,7 +62,7 @@ jobs:
 
       - name: Merge uat to int
         run: |
-          echo "ale glupotka hihi"
+          echo "Merging..."
           echo $GITHUB_TOKEN
           git checkout int
           git pull
