@@ -8,6 +8,6 @@ export default class Child extends LightningElement {
       theme: "success",
       label: "Greetings"
     });
-    console.log("Alert modal has been closed");
+    console.log("alkohol");
   }
 }
