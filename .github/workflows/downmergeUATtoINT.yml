@@ -18,9 +18,9 @@ jobs:
           echo "no dzialaj zesz no"
           sleep 10
           echo ${{secrets.GITHUB_TOKEN}}
-          git config user.name "michalz94"
-          git config user.email "michal.zawierucha@thinkbeyond.cloud"
-          git clone https://michalz94:${{secrets.GITHUB_TOKEN}}@github.com/michalz94/test.git testFolder
+          git config user.name "mkozub-tb"
+          git config user.email "marcin.kozub@thinkbeyond.cloud"
+          git clone https://mkozub-tb:${{secrets.GITHUB_TOKEN}}@github.com/mkozub-tb/testestest.git testFolder
           cd testFolder
           git checkout main
 
@@ -59,12 +59,12 @@ jobs:
 
       - name: Set up Git
         run: |
-          echo "test"
+          echo "boli boli boli"
           sleep 10
           echo ${{secrets.GITHUB_TOKEN}}
-          git config user.name "michalz94"
-          git config user.email "michal.zawierucha@thinkbeyond.cloud"
-          git clone https://michalz94:${{secrets.GITHUB_TOKEN}}@github.com/michalz94/test.git testFolder
+          git config user.name "mkozub-tb"
+          git config user.email "marcin.kozub@thinkbeyond.cloud"
+          git clone https://mkozub-tb:${{secrets.GITHUB_TOKEN}}@github.com/mkozub-tb/testestest.git testFolder
           cd testFolder
           git checkout main
 
@@ -96,9 +96,9 @@ jobs:
           echo "test"
           sleep 10
           echo ${{secrets.GITHUB_TOKEN}}
-          git config user.name "michalz94"
-          git config user.email "michal.zawierucha@thinkbeyond.cloud"
-          git clone https://michalz94:${{secrets.GITHUB_TOKEN}}@github.com/michalz94/test.git testFolder
+          git config user.name "mkozub-tb"
+          git config user.email "marcin.kozub@thinkbeyond.cloud"
+          git clone https://mkozub-tb:${{secrets.GITHUB_TOKEN}}@github.com/mkozub-tb/testestest.git testFolder
           cd testFolder
           git checkout main
 
