@@ -1,0 +1,31 @@
+name: Deploy TrailHead
+
+on:
+  workflow_dispatch:
+    inputs:
+      checkOnly:
+        type: choice
+        description: Deployment type
+        options:
+          - deployment
+          - validation
+      withTests:
+        type: boolean
+        description: With tests?
+        default: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    container: salesforce/salesforcedx:latest-slim
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: show job info
+        run: bash .github/scripts/echoJobInfo.sh
+      - name: authorize
+        run: bash .github/scripts/authorize.sh ${{ secrets.TRAILHEAD_AUTH_URL }}
+      - name: deploy
+        run: bash .github/scripts/build.sh ${{ inputs.withTests }} ${{ inputs.checkOnly }}
