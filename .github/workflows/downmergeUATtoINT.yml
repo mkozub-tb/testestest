@@ -78,6 +78,7 @@ jobs:
 
       - name: Merge uat to int
         run: |
+          echo "slicznie prosze dzialajta"
           git checkout int
           git pull
           git merge --no-ff --no-edit --allow-unrelated-histories --strategy-option ours temp-merge
