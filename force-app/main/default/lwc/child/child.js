@@ -8,6 +8,6 @@ export default class Child extends LightningElement {
       theme: "success",
       label: "Greetings"
     });
-    console.log("alkohol");
+    console.log("przestan no, i dzialaj ok");
   }
 }
