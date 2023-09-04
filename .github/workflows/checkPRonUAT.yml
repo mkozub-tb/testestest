@@ -37,13 +37,17 @@ jobs:
           # Use GitHub API to get the workflow runs for the branch
           WORKFLOW_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?event=push&branch=$PR_BRANCH")
-
+          
+          NUM_RUNNING_WORKFLOWS=$(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length')
+          NUM_RUNNING_WORKFLOWS=$((NUM_RUNNING_WORKFLOWS - 1))  # Subtract 1 for the current workflow
+          
           # Check if there are any OTHER running workflows for the branch
-          if [[ $(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length') -gt 1 ]]; then
-            echo "Workflows are running on branch $PR_BRANCH"
+          if [[ $NUM_RUNNING_WORKFLOWS -gt 0 ]]; then
+            echo "$NUM_RUNNING_WORKFLOWS workflows are running on branch $PR_BRANCH"
             # Sleep on purpose
             sleep 20
           else
+            echo "$NUM_RUNNING_WORKFLOWS"
             echo "No workflows running on branch $PR_BRANCH"
             
             curl -X POST "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$COMMIT_SHA" \
