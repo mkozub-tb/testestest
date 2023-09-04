@@ -16,7 +16,6 @@ jobs:
       - name: Set up Git
         run: |
           echo "no dzialaj zesz no"
-          sleep 10
           echo ${{secrets.GITHUB_TOKEN}}
           git config user.name "mkozub-tb"
           git config user.email "marcin.kozub@thinkbeyond.cloud"
@@ -78,40 +77,39 @@ jobs:
 
       - name: Merge uat to int
         run: |
-          echo "slicznie prosze dzialajta"
+          echo "ale glupotka hihi"
           git checkout int
           git pull
           git merge --no-ff --no-edit --allow-unrelated-histories --strategy-option ours temp-merge
           git push origin int
 
-  post_notify:
-    runs-on: ubuntu-latest
-    needs: merge_uat_to_int
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Git
-        run: |
-          echo "test"
-          sleep 10
-          echo ${{secrets.GITHUB_TOKEN}}
-          git config user.name "mkozub-tb"
-          git config user.email "marcin.kozub@thinkbeyond.cloud"
-          git clone https://mkozub-tb:${{secrets.GITHUB_TOKEN}}@github.com/mkozub-tb/testestest.git testFolder
-          cd testFolder
-          git checkout main
-
-      - name: Set Success Status
-        run: |
-          # Replace the following variables with your values
-          GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}
-          COMMIT_SHA=$(git rev-parse HEAD)
-          STATE="success"  # Can be "success", "failure", "pending", etc.
-          CONTEXT="custom-check-v2"  # A unique identifier for your status
-          
-          # Create a status using the GitHub API
-          curl -X POST "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$COMMIT_SHA" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -d "{\"state\":\"$STATE\",\"context\":\"$CONTEXT\",\"description\":\"Custom status description\"}"
+#  post_notify:
+#    runs-on: ubuntu-latest
+#    needs: merge_uat_to_int
+#
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
+#
+#      - name: Set up Git
+#        run: |
+#          echo "test"
+#          echo ${{secrets.GITHUB_TOKEN}}
+#          git config user.name "mkozub-tb"
+#          git config user.email "marcin.kozub@thinkbeyond.cloud"
+#          git clone https://mkozub-tb:${{secrets.GITHUB_TOKEN}}@github.com/mkozub-tb/testestest.git testFolder
+#          cd testFolder
+#          git checkout main
+#
+#      - name: Set Success Status
+#        run: |
+#          # Replace the following variables with your values
+#          GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}
+#          COMMIT_SHA=$(git rev-parse HEAD)
+#          STATE="success"  # Can be "success", "failure", "pending", etc.
+#          CONTEXT="custom-check-v2"  # A unique identifier for your status
+#
+#          # Create a status using the GitHub API
+#          curl -X POST "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$COMMIT_SHA" \
+#            -H "Authorization: token $GITHUB_TOKEN" \
+#            -d "{\"state\":\"$STATE\",\"context\":\"$CONTEXT\",\"description\":\"Custom status description\"}"
