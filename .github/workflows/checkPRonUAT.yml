@@ -38,9 +38,7 @@ jobs:
           WORKFLOW_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?event=push&branch=$PR_BRANCH")
           
-          NUM_RUNNING_WORKFLOWS=$(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length')
-          echo "$WORKFLOW_RUNS"
-          NUM_RUNNING_WORKFLOWS=$((NUM_RUNNING_WORKFLOWS - 3))  # Subtract 1 for the current workflow
+          NUM_RUNNING_WORKFLOWS=$(echo "$WORKFLOW_RUNS" | jq '[.workflow_runs[] | select(.status != "completed")] | length')
           
           # Check if there are any OTHER running workflows for the branch
           if [[ $NUM_RUNNING_WORKFLOWS -gt 0 ]]; then
@@ -50,7 +48,7 @@ jobs:
           else
             echo "$NUM_RUNNING_WORKFLOWS"
             echo "No workflows running on branch $PR_BRANCH"
-            
+          
             curl -X POST "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$COMMIT_SHA" \
               -H "Authorization: token $GITHUB_TOKEN" \
               -d "{\"state\":\"$STATE\",\"context\":\"$CONTEXT\",\"description\":\"Custom status for the current pull request\"}"
