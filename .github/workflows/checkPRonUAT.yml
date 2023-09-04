@@ -39,7 +39,8 @@ jobs:
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?event=push&branch=$PR_BRANCH")
           
           NUM_RUNNING_WORKFLOWS=$(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length')
-          NUM_RUNNING_WORKFLOWS=$((NUM_RUNNING_WORKFLOWS - 1))  # Subtract 1 for the current workflow
+          echo "$WORKFLOW_RUNS"
+          NUM_RUNNING_WORKFLOWS=$((NUM_RUNNING_WORKFLOWS - 3))  # Subtract 1 for the current workflow
           
           # Check if there are any OTHER running workflows for the branch
           if [[ $NUM_RUNNING_WORKFLOWS -gt 0 ]]; then
