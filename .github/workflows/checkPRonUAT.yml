@@ -3,6 +3,9 @@ name: Checking uat PR
 on:
   pull_request:
     types: [opened, reopened]
+  push:
+    branches:
+      - uat
 
 
 jobs:
@@ -38,6 +41,8 @@ jobs:
           # Check if there are any running workflows for the branch
           if [[ $(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length') -gt 0 ]]; then
             echo "Workflows are running on branch $PR_BRANCH"
+            # Sleep on purpose
+            sleep 20
           else
             echo "No workflows running on branch $PR_BRANCH"
             
