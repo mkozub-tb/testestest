@@ -38,8 +38,8 @@ jobs:
           WORKFLOW_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?event=push&branch=$PR_BRANCH")
 
-          # Check if there are any running workflows for the branch
-          if [[ $(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length') -gt 0 ]]; then
+          # Check if there are any OTHER running workflows for the branch
+          if [[ $(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length') -gt 1 ]]; then
             echo "Workflows are running on branch $PR_BRANCH"
             # Sleep on purpose
             sleep 20
