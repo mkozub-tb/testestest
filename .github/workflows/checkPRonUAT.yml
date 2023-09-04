@@ -26,8 +26,11 @@ jobs:
 
       - name: Checking
         run: |
-          # COMMIT_SHA=${{ github.event.pull_request.head.sha }}
-          PR_BRANCH=${{github.event.pull_request.head.ref}}
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          COMMIT_SHA=${{ github.event.pull_request.head.sha }}
+          STATE="success"  # Can be "success", "failure", "pending", etc.
+          CONTEXT="custom-check-v2"  # A unique identifier for your status
+          PR_BRANCH=${{ github.event.pull_request.base.ref }}
           
           # Use GitHub API to get the workflow runs for the branch
           WORKFLOW_RUNS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -36,8 +39,10 @@ jobs:
           # Check if there are any running workflows for the branch
           if [[ $(echo "$WORKFLOW_RUNS" | jq '.workflow_runs | length') -gt 0 ]]; then
             echo "Workflows are running on branch $PR_BRANCH"
-            echo "::set-output name=workflowRunning::true"
           else
             echo "No workflows running on branch $PR_BRANCH"
-            echo "::set-output name=workflowRunning::false"
+            
+            curl -X POST "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$COMMIT_SHA" \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -d "{\"state\":\"$STATE\",\"context\":\"$CONTEXT\",\"description\":\"Custom status for the current pull request\"}"
           fi
