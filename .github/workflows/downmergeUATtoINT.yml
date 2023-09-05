@@ -1,12 +1,9 @@
-name: Auto Merge uat to int
+name: Auto Merge UAT To INT
 
 on:
   pull_request:
     types:
       - closed
-    # todo
-#    branches:
-#      - 'feature/*'
 
 jobs:
   merge_uat_to_int:
@@ -15,32 +12,30 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Git
         run: |
-          echo "boli boli boli"
-          echo ${{secrets.GITHUB_TOKEN}}
           git config user.name "mkozub-tb"
           git config user.email "marcin.kozub@thinkbeyond.cloud"
           git clone https://mkozub-tb:${{secrets.GITHUB_TOKEN}}@github.com/mkozub-tb/testestest.git testFolder
           cd testFolder
           git checkout main
 
-      - name: Set Pending Status For All Open PRS
+      - name: Set Pending Status For All Open PRS To UAT
         run: |
           # Replace the following variables with your values
-          GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           
-          STATE="pending"  # Can be "success", "failure", "pending", etc.
-          CONTEXT="custom-check-v2"  # A unique identifier for your status
+          STATE="pending"
+          CONTEXT="custom-check-v2"
           
           # List all open pull requests targeting the branch
-          PRS=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls?state=open&base=uat" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq -r '.[].number')
+          PRS=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls?state=open&base=uat" -H "Authorization: token $GITHUB_TOKEN" | jq -r '.[].number')
           
           # Iterate through the pull requests and set a status
           for PR_NUMBER in $PRS; do
-            response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")
+            response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")
           
             COMMIT_SHA=$(echo "$response" | jq -r '.head.sha')
           
@@ -63,26 +58,25 @@ jobs:
       - name: Merge uat to int
         run: |
           echo "Merging..."
-          echo $GITHUB_TOKEN
           git checkout int
           git pull
           git merge --no-ff --no-edit --allow-unrelated-histories --strategy-option ours temp-merge
           git push origin int
 
-      - name: Set Success Status For All Open PRS
+      - name: Set Success Status For All Open PRS To UAT
         run: |
           # Replace the following variables with your values
-          GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           
           STATE="success"  # Can be "success", "failure", "pending", etc.
           CONTEXT="custom-check-v2"  # A unique identifier for your status
           
           # List all open pull requests targeting the branch
-          PRS=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls?state=open&base=uat" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq -r '.[].number')
+          PRS=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls?state=open&base=uat" -H "Authorization: token $GITHUB_TOKEN" | jq -r '.[].number')
           
           # Iterate through the pull requests and set a status
           for PR_NUMBER in $PRS; do
-            response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")
+            response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")
           
             COMMIT_SHA=$(echo "$response" | jq -r '.head.sha')
           

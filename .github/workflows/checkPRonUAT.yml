@@ -1,25 +1,22 @@
-name: Checking uat PR
+name: Checking UAT For PR
 
 on:
   pull_request:
-    types: [opened, reopened]
-  push:
-    branches:
-      - uat
-
+    types: [opened, reopened, edited, synchronize]
+  pull_request_target:
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
   check_is_downmerge_running:
+    if: github.event.pull_request.base.ref == 'uat'
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Git
         run: |
-          echo "boli boli boli"
-          echo ${{secrets.GITHUB_TOKEN}}
           git config user.name "mkozub-tb"
           git config user.email "marcin.kozub@thinkbeyond.cloud"
           git clone https://mkozub-tb:${{secrets.GITHUB_TOKEN}}@github.com/mkozub-tb/testestest.git testFolder
@@ -30,8 +27,8 @@ jobs:
         run: |
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           COMMIT_SHA=${{ github.event.pull_request.head.sha }}
-          STATE="success"  # Can be "success", "failure", "pending", etc.
-          CONTEXT="custom-check-v2"  # A unique identifier for your status
+          STATE="success"
+          CONTEXT="custom-check-v2"
           PR_BRANCH=${{ github.event.pull_request.base.ref }}
           
           # Use GitHub API to get the workflow runs for the branch
@@ -46,7 +43,6 @@ jobs:
             # Sleep on purpose
             sleep 20
           else
-            echo "$NUM_RUNNING_WORKFLOWS"
             echo "No workflows running on branch $PR_BRANCH"
           
             curl -X POST "https://api.github.com/repos/$GITHUB_REPOSITORY/statuses/$COMMIT_SHA" \
